@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐣 Pet Hatching Game - Multiplayer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="loginScreen" class="screen active">
+    <div class="login-container">
+      <div class="login-box">
+        <h1>🐣 Pet Hatching Game</h1>
+        <p class="subtitle">Multiplayer Edition</p>
+        
+        <div id="authTabs" class="auth-tabs">
+          <button class="tab-btn active" data-tab="login">Login</button>
+          <button class="tab-btn" data-tab="register">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <button type="submit" class="btn-primary">Login</button>
+          <p id="loginError" class="error-message"></p>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form">
+          <div class="form-group">
+            <label for="registerUsername">Username</label>
+            <input type="text" id="registerUsername" required>
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" required>
+          </div>
+          <button type="submit" class="btn-primary">Register</button>
+          <p id="registerError" class="error-message"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Game Screen -->
+  <div id="gameScreen" class="screen">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="player-info">
+        <h2 id="playerName">Player Name</h2>
+        <div class="stats">
+          <span class="stat">💰 <span id="coinsDisplay">0</span></span>
+          <span class="stat">⭐ <span id="levelDisplay">1</span></span>
+          <span class="stat">🎯 <span id="experienceDisplay">0</span></span>
+        </div>
+      </div>
+      <div class="nav-buttons">
+        <button class="btn-nav" id="btnPets">🐾 Pets</button>
+        <button class="btn-nav" id="btnShop">🛍️ Shop</button>
+        <button class="btn-nav" id="btnTrade">💱 Trade</button>
+        <button class="btn-nav" id="btnLeaderboard">🏆 Leaderboard</button>
+        <button class="btn-nav" id="btnLogout">🚪 Logout</button>
+      </div>
+    </div>
+
+    <!-- Game World (Plaza) -->
+    <div class="game-container">
+      <canvas id="gameCanvas" width="1200" height="600"></canvas>
+      <div id="announcementBar" class="announcement-bar"></div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel">
+      <div class="chat-header">Global Chat</div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <form id="chatForm" class="chat-input-form">
+        <input type="text" id="chatInput" placeholder="Type a message..." maxlength="500">
+        <button type="submit" class="btn-send">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pets Panel -->
+  <div id="petsPanel" class="panel">
+    <div class="panel-header">
+      <h2>My Pets</h2>
+      <button class="btn-close" data-panel="petsPanel">✕</button>
+    </div>
+    <div class="panel-content">
+      <div id="petsList" class="pets-list"></div>
+    </div>
+  </div>
+
+  <!-- Pet Details Modal -->
+  <div id="petModal" class="modal">
+    <div class="modal-content">
+      <button class="btn-close-modal">✕</button>
+      <div class="pet-display">
+        <div id="petAvatar" class="pet-avatar"></div>
+        <h3 id="petName">Pet Name</h3>
+        <p id="petSpecies" class="pet-species">Species</p>
+      </div>
+      <div class="pet-stats">
+        <div class="stat-bar">
+          <span>Hunger</span>
+          <div class="bar"><div id="hungerBar" class="fill"></div></div>
+        </div>
+        <div class="stat-bar">
+          <span>Happiness</span>
+          <div class="bar"><div id="happinessBar" class="fill"></div></div>
+        </div>
+        <div class="stat-bar">
+          <span>Health</span>
+          <div class="bar"><div id="healthBar" class="fill"></div></div>
+        </div>
+      </div>
+      <div class="pet-actions">
+        <button id="btnFeed" class="btn-action">🍎 Feed</button>
+        <button id="btnPlay" class="btn-action">🎮 Play</button>
+        <button id="btnRename" class="btn-action">✏️ Rename</button>
+      </div>
+      <div class="pet-info">
+        <p><strong>Level:</strong> <span id="petLevel">1</span></p>
+        <p><strong>Rarity:</strong> <span id="petRarity">Common</span></p>
+        <p><strong>Mutation:</strong> <span id="petMutation">None</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shop Panel -->
+  <div id="shopPanel" class="panel">
+    <div class="panel-header">
+      <h2>🛍️ Egg Shop</h2>
+      <button class="btn-close" data-panel="shopPanel">✕</button>
+    </div>
+    <div class="panel-content">
+      <div id="eggShop" class="egg-shop"></div>
+    </div>
+  </div>
+
+  <!-- Trading Panel -->
+  <div id="tradePanel" class="panel">
+    <div class="panel-header">
+      <h2>💱 Trading Center</h2>
+      <button class="btn-close" data-panel="tradePanel">✕</button>
+    </div>
+    <div class="panel-content">
+      <div class="trade-tabs">
+        <button class="trade-tab active" data-tab="active-trades">Active Trades</button>
+        <button class="trade-tab" data-tab="create-trade">Create Trade</button>
+      </div>
+      <div id="activeTrades" class="trade-tab-content active"></div>
+      <div id="createTrade" class="trade-tab-content">
+        <form id="tradeForm">
+          <div class="form-group">
+            <label for="tradePetId">Select Pet to Trade</label>
+            <select id="tradePetId"></select>
+          </div>
+          <div class="form-group">
+            <label for="tradeCoins">Coins to Offer</label>
+            <input type="number" id="tradeCoins" min="0">
+          </div>
+          <div class="form-group">
+            <label for="tradeReceiverUsername">Recipient Username</label>
+            <input type="text" id="tradeReceiverUsername">
+          </div>
+          <button type="submit" class="btn-primary">Send Trade Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Panel -->
+  <div id="leaderboardPanel" class="panel">
+    <div class="panel-header">
+      <h2>🏆 Leaderboard</h2>
+      <button class="btn-close" data-panel="leaderboardPanel">✕</button>
+    </div>
+    <div class="panel-content">
+      <table id="leaderboardTable" class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Level</th>
+            <th>Pets</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hatch Animation Modal -->
+  <div id="hatchModal" class="modal hatch-modal">
+    <div class="hatch-container">
+      <div class="egg-animation">🐣</div>
+      <p id="hatchMessage">Hatching...</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/multiplayer.js"></script>
+  <script src="js/trading.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
